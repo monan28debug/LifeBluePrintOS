@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Life Blueprint OS</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body class="theme-dark">
+
+<canvas id="rainCanvas"></canvas>
+
+<!-- ===================== WELCOME POPUP ===================== -->
+<div id="welcomePopup" class="popup-overlay hidden">
+  <div class="popup-box glass popup-welcome">
+    <div class="popup-hero">
+      <span class="popup-icon-big">📐</span>
+      <h2>Welcome to <span class="grad-text">Life Blueprint OS</span></h2>
+      <p class="popup-tagline">Your entire life — health, money, goals, skills, career & more — organized in one beautiful dashboard.</p>
+    </div>
+    <div class="popup-sections">
+      <div class="popup-feature">
+        <span class="pf-icon">🧠</span>
+        <div><strong>What is this?</strong><p>A personal life management system that runs 100% in your browser. No cloud. No subscription. No tracking. Fully private.</p></div>
+      </div>
+      <div class="popup-feature">
+        <span class="pf-icon">📦</span>
+        <div><strong>What can I do?</strong><p>Track health, set goals, manage money, log skills, plan your career, write notes, schedule events, and get AI-powered suggestions — all in one place.</p></div>
+      </div>
+      <div class="popup-feature">
+        <span class="pf-icon">🔒</span>
+        <div><strong>Is it private?</strong><p>Yes. Everything saves only on your device inside your browser. Nobody else can see your data — not even us.</p></div>
+      </div>
+      <div class="popup-feature warn-feature">
+        <span class="pf-icon">⚠️</span>
+        <div>
+          <strong>⚠️ Important — Data Safety Warning</strong>
+          <p>Your data lives <em>only</em> in this browser on this device. If you clear your browser data, reset your phone, or switch browsers — your data is <strong>permanently erased with no recovery possible.</strong></p>
+          <p style="margin-top:6px;">👉 Always use the <strong>💾 Export</strong> button to download a backup regularly.</p>
+        </div>
+      </div>
+      <div class="popup-feature">
+        <span class="pf-icon">💾</span>
+        <div>
+          <strong>How to backup & restore?</strong>
+          <p><strong>Export ⬇️:</strong> Click 💾 in the top bar → downloads a <code style="background:rgba(255,255,255,.1);padding:1px 5px;border-radius:4px;">database.db</code> file to your device.</p>
+          <p style="margin-top:4px;"><strong>Import ⬆️:</strong> Click 💾 → Import tab → select your saved <code style="background:rgba(255,255,255,.1);padding:1px 5px;border-radius:4px;">.db</code> file → data restored instantly.</p>
+        </div>
+      </div>
+    </div>
+    <button class="btn-primary btn-wide" id="closeWelcome" style="font-size:1rem;padding:14px;">🚀 Let's Start Building My Life Blueprint!</button>
+    <label class="popup-check"><input type="checkbox" id="dontShowAgain"> Don't show this again</label>
+  </div>
+</div>
+
+<!-- ===================== DATA POPUP ===================== -->
+<div id="dataPopup" class="popup-overlay hidden">
+  <div class="popup-box glass popup-data">
+    <button class="popup-close" id="closeDataPopup">✕</button>
+    <h2>💾 Data Management — Import & Export</h2>
+    <div class="popup-feature warn-feature" style="margin-bottom:16px;">
+      <span class="pf-icon">⚠️</span>
+      <div>
+        <strong>Your data is stored ONLY on this device</strong>
+        <p>It is NOT backed up anywhere online. These events will permanently delete your data with NO recovery:</p>
+        <ul>
+          <li>🗑️ Clearing browser data / cookies / site data</li>
+          <li>📱 Resetting or changing your device</li>
+          <li>🌐 Switching to a different browser</li>
+          <li>🕵️ Using private / incognito mode</li>
+          <li>🗄️ Uninstalling the browser</li>
+        </ul>
+      </div>
+    </div>
+    <div class="data-actions-grid">
+      <div class="data-action-card glass card-glow-teal">
+        <div class="da-icon">⬇️</div>
+        <h3>Export (Backup)</h3>
+        <p>Download your entire database as a <code>.db</code> file to your device. Do this regularly!</p>
+        <button class="btn-primary" id="popupExportBtn" style="background:linear-gradient(135deg,#00e8b5,#00c3ff);">⬇️ Export My Data</button>
+      </div>
+      <div class="data-action-card glass card-glow-violet">
+        <div class="da-icon">⬆️</div>
+        <h3>Import (Restore)</h3>
+        <p>Select a previously exported <code>.db</code> file to restore all your data on this device.</p>
+        <label class="btn-primary" style="display:block;text-align:center;cursor:pointer;background:linear-gradient(135deg,#9b5fff,#ff4da6);">⬆️ Import Data<input type="file" id="popupImportInput" accept=".db" hidden></label>
+      </div>
+    </div>
+    <div class="popup-tip">💡 <strong>Pro Tip:</strong> Export your data at least once a week. Save the file to Google Drive, iCloud, or email it to yourself. This is your only backup method.</div>
+  </div>
+</div>
+
+<!-- ===================== AUTH SCREEN ===================== -->
+<div id="authScreen" class="auth-screen">
+  <div class="auth-bg-shapes">
+    <div class="shape s1"></div>
+    <div class="shape s2"></div>
+    <div class="shape s3"></div>
+    <div class="shape s4"></div>
+  </div>
+
+  <div class="auth-card glass">
+    <!-- Hero top -->
+    <div class="auth-hero">
+      <span class="auth-logo-icon">📐</span>
+      <h1 class="logo">Life Blueprint <span>OS</span></h1>
+      <p class="auth-sub">✨ Your entire life, beautifully organized in one place.</p>
+      <div class="auth-features">
+        <span>❤️ Health</span><span>🎯 Goals</span><span>💰 Money</span>
+        <span>⚡ Skills</span><span>💼 Career</span><span>🔭 Future</span>
+        <span>📝 Notes</span><span>📅 Calendar</span><span>🤖 AI Hub</span>
+      </div>
+    </div>
+
+    <!-- Auth body -->
+    <div class="auth-body">
+      <div class="auth-tabs">
+        <button class="auth-tab active" data-tab="login">🔑 Login</button>
+        <button class="auth-tab" data-tab="register">✨ Register</button>
+      </div>
+
+      <!-- Login form -->
+      <form id="loginForm" class="auth-form">
+        <div class="auth-input-wrap">
+          <span class="auth-input-icon">👤</span>
+          <input type="text" id="loginUsername" placeholder="Your username" required autocomplete="username">
+        </div>
+        <div class="auth-input-wrap">
+          <span class="auth-input-icon">🔒</span>
+          <input type="password" id="loginPassword" placeholder="Your password" required autocomplete="current-password">
+        </div>
+        <button type="submit" class="btn-primary btn-wide" style="font-size:.98rem;padding:14px;">🚀 Login to My Dashboard</button>
+        <p class="auth-msg" id="loginMsg"></p>
+      </form>
+
+      <!-- Register form -->
+      <form id="registerForm" class="auth-form hidden">
+        <div class="auth-input-wrap">
+          <span class="auth-input-icon">✨</span>
+          <input type="text" id="registerUsername" placeholder="Choose a username (min 3 chars)" required>
+        </div>
+        <div class="auth-input-wrap">
+          <span class="auth-input-icon">🔒</span>
+          <input type="password" id="registerPassword" placeholder="Choose a password (min 4 chars)" required>
+        </div>
+        <button type="submit" class="btn-primary btn-wide" style="font-size:.98rem;padding:14px;">🎉 Create My Account</button>
+        <p class="auth-msg" id="registerMsg"></p>
+      </form>
+
+      <!-- BIG WARNING BOX -->
+      <div class="auth-warning-box">
+        <div class="warn-title">⚠️ IMPORTANT — Read Before You Start</div>
+        <p><strong style="color:var(--warn);">Your data is saved ONLY in this browser on this device.</strong> It does NOT sync to any server or cloud. If you:</p>
+        <ul>
+          <li>Clear browser data / history / cookies</li>
+          <li>Reset or change your device</li>
+          <li>Switch to another browser or incognito mode</li>
+          <li>Uninstall this browser</li>
+        </ul>
+        <p style="margin-top:8px;">→ All your data will be <strong style="color:var(--danger);">permanently deleted</strong> with no way to recover it.</p>
+        <p style="margin-top:6px;">✅ <strong>Solution:</strong> Use the <strong>💾 Save</strong> button (top bar after login) regularly to download a backup file to your device.</p>
+      </div>
+
+      <!-- HOW IT WORKS / STORAGE INFO -->
+      <div class="auth-info-section">
+        <div class="info-title">💾 How Your Data Works</div>
+        <div class="info-row">
+          <span class="info-row-icon">🗄️</span>
+          <div><strong>Where is data saved?</strong> Inside your browser's local storage (IndexedDB) on this specific device and browser only.</div>
+        </div>
+        <div class="info-row">
+          <span class="info-row-icon">⬇️</span>
+          <div><strong>How to Export (Backup):</strong> After login, click the <strong>💾</strong> button in the top bar → click "Export My Data" → a <code style="background:rgba(255,255,255,.1);padding:1px 5px;border-radius:3px;">database.db</code> file downloads to your device. Save it to Google Drive or your phone gallery.</div>
+        </div>
+        <div class="info-row">
+          <span class="info-row-icon">⬆️</span>
+          <div><strong>How to Import (Restore):</strong> Click the <strong>💾</strong> button → click "Import Data" → select your saved <code style="background:rgba(255,255,255,.1);padding:1px 5px;border-radius:3px;">.db</code> file → all your data is restored instantly on this device.</div>
+        </div>
+        <div class="info-row">
+          <span class="info-row-icon">🔄</span>
+          <div><strong>Transfer to another device:</strong> Export on Device A → send the <code style="background:rgba(255,255,255,.1);padding:1px 5px;border-radius:3px;">.db</code> file to Device B → Import on Device B. Your data moves with you.</div>
+        </div>
+        <div class="info-row">
+          <span class="info-row-icon">🔒</span>
+          <div><strong>Is it private?</strong> 100% yes. No server receives your data. Your entries never leave your device unless you manually export them.</div>
+        </div>
+      </div>
+
+      <!-- FEATURES LIST -->
+      <div class="auth-features-list">
+        <div class="info-title">⚡ What's Inside Life Blueprint OS</div>
+        <div class="feature-grid">
+          <span>❤️ Sleep, Water & Workout Tracker</span>
+          <span>⚖️ Weight & Health Goals</span>
+          <span>🎯 Short & Long-term Goals</span>
+          <span>🏅 Milestone Tracker</span>
+          <span>💰 Income & Expense Tracker</span>
+          <span>🏦 Savings & Budget Planner</span>
+          <span>⚡ Skills & Learning Tracker</span>
+          <span>💼 Resume & Job Tracker</span>
+          <span>🎓 Certification Tracker</span>
+          <span>🔭 1, 3 & 5-Year Future Planner</span>
+          <span>📚 Books, Courses & Ideas</span>
+          <span>📝 Notes with Folders & Search</span>
+          <span>📅 Daily, Weekly & Monthly Calendar</span>
+          <span>🏆 Achievements & Streak Tracker</span>
+          <span>🤖 AI Analysis (Daily/Weekly/Monthly)</span>
+          <span>💡 AI Suggestions from Real Data</span>
+          <span>📖 AI Learn Hub (4 subjects)</span>
+          <span>🌙 Dark / Light / LoFi Themes</span>
+          <span>🌧️ Rain Animation Background</span>
+          <span>💾 Export & Import Database</span>
+        </div>
+      </div>
+
+      <!-- CREATOR BOX -->
+      <div class="auth-creator-box">
+        <div class="info-title">👨‍💻 About the Creator</div>
+        <div class="creator-name">Life Blueprint OS</div>
+        <div class="creator-email"><a href="mailto:lifeblueprint.os@gmail.com">📧 lifeblueprint.os@gmail.com</a></div>
+        <div class="creator-role">Built with ❤️ using HTML · CSS · Vanilla JS · SQLite (sql.js)<br>
+        100% free · No server · No tracking · No subscription · Open source</div>
+      </div>
+
+    </div><!-- end auth-body -->
+  </div><!-- end auth-card -->
+</div><!-- end auth-screen -->
+
+<!-- ===================== APP SHELL ===================== -->
+<div id="appShell" class="app-shell hidden">
+
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-logo">
+      <span class="sidebar-logo-icon">📐</span>
+      <span class="sidebar-logo-text">Life Blueprint</span>
+    </div>
+    <div class="sidebar-user-badge" id="sidebarUserBadge"></div>
+    <nav class="nav-links">
+      <button class="nav-btn active" data-page="dashboard"><span class="nav-icon">🏠</span><span>Dashboard</span></button>
+      <button class="nav-btn" data-page="health"><span class="nav-icon">❤️</span><span>Health</span></button>
+      <button class="nav-btn" data-page="goals"><span class="nav-icon">🎯</span><span>Goals</span></button>
+      <button class="nav-btn" data-page="money"><span class="nav-icon">💰</span><span>Money</span></button>
+      <button class="nav-btn" data-page="skills"><span class="nav-icon">⚡</span><span>Skills</span></button>
+      <button class="nav-btn" data-page="career"><span class="nav-icon">💼</span><span>Career</span></button>
+      <button class="nav-btn" data-page="future"><span class="nav-icon">🔭</span><span>Future Planner</span></button>
+      <button class="nav-btn" data-page="explore"><span class="nav-icon">🧭</span><span>Explore</span></button>
+      <button class="nav-btn" data-page="notes"><span class="nav-icon">📝</span><span>Notes</span></button>
+      <button class="nav-btn" data-page="calendar"><span class="nav-icon">📅</span><span>Calendar</span></button>
+      <button class="nav-btn" data-page="achievements"><span class="nav-icon">🏆</span><span>Achievements</span></button>
+      <button class="nav-btn" data-page="ai"><span class="nav-icon">🤖</span><span>AI Hub</span></button>
+    </nav>
+    <div class="sidebar-bottom">
+      <button id="helpBtn" class="nav-btn help-btn"><span class="nav-icon">❓</span><span>Help & About</span></button>
+      <button id="logoutBtn" class="nav-btn logout"><span class="nav-icon">🚪</span><span>Logout</span></button>
+    </div>
+  </aside>
+
+  <main class="main-content">
+    <header class="topbar glass">
+      <button id="menuToggle" class="icon-btn mobile-only">☰</button>
+      <div class="search-wrap">
+        <span class="search-icon">🔍</span>
+        <input type="text" id="globalSearch" placeholder="Search everything...">
+      </div>
+      <div class="topbar-right">
+        <button id="themeToggle" class="icon-btn" title="Cycle theme">🌙</button>
+        <button id="dataBtn" class="icon-btn data-btn" title="Import / Export data">💾</button>
+        <span id="welcomeUser" class="welcome-user"></span>
+      </div>
+    </header>
+
+    <div id="searchResults" class="search-results hidden glass"></div>
+
+    <!-- DASHBOARD -->
+    <section class="page active" id="page-dashboard">
+      <div class="page-hero">
+        <div><h2 class="page-title">🏠 Dashboard</h2><p class="page-subtitle">Your life at a glance</p></div>
+        <div class="hero-date" id="todayDate"></div>
+      </div>
+      <div class="grid grid-4">
+        <div class="card glass life-level-card card-glow-blue">
+          <h3>🌟 Life Level</h3>
+          <div class="ring-wrap"><canvas id="lifeLevelRing" width="120" height="120"></canvas><div class="ring-text" id="lifeLevelText">--%</div></div>
+        </div>
+        <div class="card glass card-glow-gold">
+          <h3>🔥 Streak</h3>
+          <p id="streakStat" class="big-stat">0 🔥</p>
+          <p class="muted">days active</p>
+        </div>
+        <div class="card glass card-glow-teal">
+          <h3>📅 Upcoming Events</h3>
+          <div id="upcomingTasks" class="mini-list"></div>
+        </div>
+        <div class="card glass card-glow-violet">
+          <h3>⚡ Quick Actions</h3>
+          <div class="quick-actions">
+            <button class="qa-btn qa-health" data-quick="health">❤️ Health</button>
+            <button class="qa-btn qa-goal"   data-quick="goals">🎯 Goal</button>
+            <button class="qa-btn qa-money"  data-quick="money">💰 Money</button>
+            <button class="qa-btn qa-note"   data-quick="notes">📝 Note</button>
+          </div>
+        </div>
+      </div>
+      <div class="grid grid-2">
+        <div class="card glass">
+          <h3>📊 Weekly Progress Overview</h3>
+          <canvas id="dashboardChart" height="160"></canvas>
+        </div>
+        <div class="card glass">
+          <h3>🤖 AI Snapshot</h3>
+          <div id="aiSnapshotList"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- HEALTH -->
+    <section class="page" id="page-health">
+      <div class="page-header">
+        <div><h2 class="page-title">❤️ Health</h2><p class="page-subtitle">Track sleep, water, workouts & weight</p></div>
+        <button class="btn-primary" data-add="health">➕ Add Entry</button>
+      </div>
+      <div class="grid grid-4" id="healthSummary"></div>
+      <div class="tabs-row">
+        <button class="tab-pill active" data-cat="all">🌀 All</button>
+        <button class="tab-pill" data-cat="sleep">😴 Sleep</button>
+        <button class="tab-pill" data-cat="water">💧 Water</button>
+        <button class="tab-pill" data-cat="workout">🏋️ Workout</button>
+        <button class="tab-pill" data-cat="weight">⚖️ Weight</button>
+        <button class="tab-pill" data-cat="goal">🎯 Goals</button>
+      </div>
+      <div class="list" id="healthList"></div>
+    </section>
+
+    <!-- GOALS -->
+    <section class="page" id="page-goals">
+      <div class="page-header">
+        <div><h2 class="page-title">🎯 Goals</h2><p class="page-subtitle">Short-term, long-term & milestones</p></div>
+        <button class="btn-primary" data-add="goals">➕ Add Goal</button>
+      </div>
+      <div class="tabs-row">
+        <button class="tab-pill active" data-cat="all">🌀 All</button>
+        <button class="tab-pill" data-cat="short">⚡ Short-term</button>
+        <button class="tab-pill" data-cat="long">🔭 Long-term</button>
+        <button class="tab-pill" data-cat="milestone">🏅 Milestones</button>
+      </div>
+      <div class="list" id="goalsList"></div>
+    </section>
+
+    <!-- MONEY -->
+    <section class="page" id="page-money">
+      <div class="page-header">
+        <div><h2 class="page-title">💰 Money</h2><p class="page-subtitle">Income, expenses, savings & budget</p></div>
+        <button class="btn-primary" data-add="money">➕ Add Transaction</button>
+      </div>
+      <div class="grid grid-4" id="moneySummary"></div>
+      <div class="tabs-row">
+        <button class="tab-pill active" data-cat="all">🌀 All</button>
+        <button class="tab-pill" data-cat="income">📈 Income</button>
+        <button class="tab-pill" data-cat="expense">📉 Expense</button>
+        <button class="tab-pill" data-cat="savings">🏦 Savings</button>
+        <button class="tab-pill" data-cat="budget">📋 Budget</button>
+      </div>
+      <canvas id="moneyChart" height="140" style="margin-bottom:16px;"></canvas>
+      <div class="list" id="moneyList"></div>
+    </section>
+
+    <!-- SKILLS -->
+    <section class="page" id="page-skills">
+      <div class="page-header">
+        <div><h2 class="page-title">⚡ Skills</h2><p class="page-subtitle">Track what you're learning & mastering</p></div>
+        <button class="btn-primary" data-add="skills">➕ Add Skill</button>
+      </div>
+      <div class="list" id="skillsList"></div>
+    </section>
+
+    <!-- CAREER -->
+    <section class="page" id="page-career">
+      <div class="page-header">
+        <div><h2 class="page-title">💼 Career</h2><p class="page-subtitle">Resume, jobs & certifications</p></div>
+        <button class="btn-primary" data-add="career">➕ Add Entry</button>
+      </div>
+      <div class="tabs-row">
+        <button class="tab-pill active" data-cat="all">🌀 All</button>
+        <button class="tab-pill" data-cat="resume">📄 Resume</button>
+        <button class="tab-pill" data-cat="job">🏢 Job Tracker</button>
+        <button class="tab-pill" data-cat="certification">🎓 Certifications</button>
+      </div>
+      <div class="list" id="careerList"></div>
+    </section>
+
+    <!-- FUTURE -->
+    <section class="page" id="page-future">
+      <div class="page-header">
+        <div><h2 class="page-title">🔭 Future Planner</h2><p class="page-subtitle">Vision for 1, 3 & 5 years ahead</p></div>
+        <button class="btn-primary" data-add="future">➕ Add Plan</button>
+      </div>
+      <div class="tabs-row">
+        <button class="tab-pill active" data-cat="all">🌀 All</button>
+        <button class="tab-pill" data-cat="1year">📆 1-Year</button>
+        <button class="tab-pill" data-cat="3year">🗓️ 3-Year</button>
+        <button class="tab-pill" data-cat="5year">🔭 5-Year</button>
+      </div>
+      <div class="list" id="futureList"></div>
+    </section>
+
+    <!-- EXPLORE -->
+    <section class="page" id="page-explore">
+      <div class="page-header">
+        <div><h2 class="page-title">🧭 Explore</h2><p class="page-subtitle">Books, courses, topics & ideas</p></div>
+        <button class="btn-primary" data-add="explore">➕ Add Item</button>
+      </div>
+      <div class="tabs-row">
+        <button class="tab-pill active" data-cat="all">🌀 All</button>
+        <button class="tab-pill" data-cat="topic">🧠 Topics</button>
+        <button class="tab-pill" data-cat="book">📚 Books</button>
+        <button class="tab-pill" data-cat="course">🎓 Courses</button>
+        <button class="tab-pill" data-cat="idea">💡 Ideas</button>
+      </div>
+      <div class="list" id="exploreList"></div>
+    </section>
+
+    <!-- NOTES -->
+    <section class="page" id="page-notes">
+      <div class="page-header">
+        <div><h2 class="page-title">📝 Notes</h2><p class="page-subtitle">Quick notes, folders & search</p></div>
+        <button class="btn-primary" data-add="notes">➕ Add Note</button>
+      </div>
+      <div class="notes-search-wrap">
+        <span class="search-icon">🔍</span>
+        <input type="text" id="notesSearch" placeholder="Search your notes...">
+      </div>
+      <div class="list" id="notesList"></div>
+    </section>
+
+    <!-- CALENDAR -->
+    <section class="page" id="page-calendar">
+      <div class="page-header">
+        <div><h2 class="page-title">📅 Calendar</h2><p class="page-subtitle">Daily, weekly & monthly planner</p></div>
+        <button class="btn-primary" data-add="calendar">➕ Add Event</button>
+      </div>
+      <div class="tabs-row">
+        <button class="tab-pill active" data-view="month">🗓️ Monthly</button>
+        <button class="tab-pill" data-view="week">📅 Weekly</button>
+        <button class="tab-pill" data-view="day">☀️ Daily</button>
+      </div>
+      <div id="calendarView" class="card glass cal-wrap"></div>
+      <div class="list" id="calendarList" style="margin-top:16px;"></div>
+    </section>
+
+    <!-- ACHIEVEMENTS -->
+    <section class="page" id="page-achievements">
+      <div><h2 class="page-title">🏆 Achievements</h2><p class="page-subtitle">Streaks, milestones & records</p></div>
+      <div class="grid grid-3" style="margin-top:16px;">
+        <div class="card glass card-glow-gold"><h3>🔥 Current Streak</h3><p class="big-stat" id="achStreak">0</p><p class="muted">days active</p></div>
+        <div class="card glass card-glow-violet"><h3>🏅 Milestones Hit</h3><p class="big-stat" id="achMilestones">0</p><p class="muted">completed goals</p></div>
+        <div class="card glass card-glow-teal"><h3>📊 Total Logged</h3><p class="big-stat" id="achTotal">0</p><p class="muted">entries</p></div>
+      </div>
+      <div class="page-header" style="margin-top:20px;">
+        <h3 style="margin:0;">🏆 Achievement Log</h3>
+        <button class="btn-primary" data-add="achievements">➕ Add Achievement</button>
+      </div>
+      <div class="list" id="achievementsList"></div>
+    </section>
+
+    <!-- AI HUB -->
+    <section class="page" id="page-ai">
+      <div><h2 class="page-title">🤖 AI Hub <span class="badge">Local · No External API</span></h2>
+      <p class="page-subtitle">Powered by your real data — 100% private, 100% on-device</p></div>
+      <div class="tabs-row" style="margin-top:16px;">
+        <button class="tab-pill active" data-aitab="analysis">📊 Analysis</button>
+        <button class="tab-pill" data-aitab="suggestions">💡 Suggestions</button>
+        <button class="tab-pill" data-aitab="learn">📚 Learn Hub</button>
+      </div>
+      <div id="ai-analysis" class="ai-panel">
+        <div class="tabs-row">
+          <button class="tab-pill active" data-range="daily">☀️ Daily</button>
+          <button class="tab-pill" data-range="weekly">📅 Weekly</button>
+          <button class="tab-pill" data-range="monthly">🗓️ Monthly</button>
+        </div>
+        <div class="grid grid-3" id="aiAnalysisGrid"></div>
+      </div>
+      <div id="ai-suggestions" class="ai-panel hidden">
+        <div class="list" id="aiSuggestionsList"></div>
+      </div>
+      <div id="ai-learn" class="ai-panel hidden">
+        <div class="tabs-row">
+          <button class="tab-pill active" data-subject="English">🗣️ English</button>
+          <button class="tab-pill" data-subject="Finance">💹 Finance</button>
+          <button class="tab-pill" data-subject="Technology">💻 Technology</button>
+          <button class="tab-pill" data-subject="Productivity">⚡ Productivity</button>
+        </div>
+        <div class="grid grid-2" id="learnContent"></div>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<!-- MODAL -->
+<div id="modalOverlay" class="modal-overlay hidden">
+  <div class="modal glass">
+    <div class="modal-header">
+      <h3 id="modalTitle">Add Entry</h3>
+      <button class="modal-x" id="modalCloseBtn">✕</button>
+    </div>
+    <form id="modalForm"></form>
+  </div>
+</div>
+
+<!-- TOASTS -->
+<div id="toastContainer" class="toast-container"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.10.3/sql-wasm.js"></script>
+<script src="db.js"></script>
+<script src="auth.js"></script>
+<script src="ai.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
